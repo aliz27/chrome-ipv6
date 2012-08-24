@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script>
+     var _gaq = _gaq || [];
+     _gaq.push(['_setAccount', 'UA-20910809-1']);
+     _gaq.push(['_trackPageview']);
+
+     function trackType(type) {
+       _gaq.push(['_trackEvent', type]);
+     };
+
+     (function() {
+       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+       ga.src = 'https://ssl.google-analytics.com/ga.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+     })();
+   </script>
+
+    <script>
+      function getHostname(str) {
+        var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^:/]+)', 'im');
+        return str.match(re)[1].toString();
+      }
+
+      function checkIPv6URL(tabId, changeInfo, tab) {
+	if (tab.status == "complete") {
+          var ip6 = new RegExp('^(?:f|ht)tp(?:s)?\://\[[a-f0-9:]+\]', 'im');
+          var ip4 = new RegExp('^(?:f|ht)tp(?:s)?\://[0-9]+\.[0-9]\.[0-9]+\.[0-9]+', 'im');
+          if (ip6.test(tab.url)) {
+            chrome.pageAction.show(tabId);
+          } else if (ip4.test(tab.url)) {
+            chrome.pageAction.hide(tabId);
+          } else {
+  	    var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+	          if (xhr.responseText == 200) {
+		    chrome.pageAction.show(tabId); 
+                  } else if (xhr.responseText == 100) { 
+                    chrome.pageAction.hide(tabId);
+                  }
+                }  
+              }
+            }
+
+            var url = 'http://ipv6resolver.cloudcontrolled.com/?host='+getHostname(tab.url);
+            xhr.open('GET', url, true);
+            xhr.send();
+          }
+        } 
+      };
+
+      // Listen for any changes to the URL of any tab.
+      chrome.tabs.onUpdated.addListener(checkIPv6URL);
+    </script>
+  </head>
+</html>

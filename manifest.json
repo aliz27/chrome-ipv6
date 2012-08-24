@@ -1,0 +1,16 @@
+{
+  "name": "IPv6",
+  "version": "1.7.1",
+  "description": "Shows an icon in the address bar if the site you are browsing is IPv6 enabled",
+  "permissions": [
+    "tabs", 
+    "http://ipv6resolver.cloudcontrolled.com/*"
+  ],
+  "page_action" : {
+    "default_icon" : "icon.png"
+  },
+  "icons": {
+    "48" : "icon.png"
+  },
+  "background_page" : "background.html"
+}
